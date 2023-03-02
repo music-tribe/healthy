@@ -23,7 +23,7 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		hSvc := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", &healthy.MockPinger{}))
+		hSvc, _ := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", &healthy.MockPinger{}))
 		h := Handler(hSvc)
 
 		err := h(ctx)
@@ -57,9 +57,13 @@ func TestHandler(t *testing.T) {
 			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
 		}
 
-		hSvc := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", erroringPinger))
+		hSvc, err := healthy.New("some-service", "v1.1.3", healthy.NewChecker("mockStore", erroringPinger))
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		h := Handler(hSvc)
-		err := h(ctx)
+		err = h(ctx)
 		if (err != nil) != wantErr {
 			t.Errorf("wanted error to be %v but got %v\n", wantErr, err)
 			return
@@ -86,7 +90,7 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		hSvc := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", nil))
+		hSvc, _ := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", nil))
 		h := Handler(hSvc)
 		err := h(ctx)
 		if (err != nil) != wantErr {
