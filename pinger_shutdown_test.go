@@ -4,12 +4,11 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	mocklogger "github.com/music-tribe/healthy/ports/mocks"
 )
 
 func TestShutdownPinger_Ping(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	logger := mocklogger.NewMockLogger(ctrl)
+	logger := NewMockLogger(ctrl)
 	type fields struct {
 		isShuttingDown bool
 	}

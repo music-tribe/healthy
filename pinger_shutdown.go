@@ -3,18 +3,17 @@ package healthy
 import (
 	"github.com/music-tribe/errors"
 	"github.com/music-tribe/healthy/atomic_bool"
-	"github.com/music-tribe/healthy/ports"
 )
 
 // ShutdownPinger allows us to respond to liveness probes to report shutting down
 type ShutdownPinger struct {
 	isShuttingDown atomic_bool.AtomicBool
-	logger         ports.Logger
+	logger         Logger
 	component      string
 	shutdownLog    string
 }
 
-func NewShutdownPinger(logger ports.Logger, component, shutdownLog string) *ShutdownPinger {
+func NewShutdownPinger(logger Logger, component, shutdownLog string) *ShutdownPinger {
 	return &ShutdownPinger{
 		isShuttingDown: atomic_bool.AtomicBool{},
 		logger:         logger,
