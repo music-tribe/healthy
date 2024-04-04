@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
+	github.com/golang/mock v1.6.0
 	github.com/hellofresh/health-go/v5 v5.1.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/music-tribe/errors v0.0.2

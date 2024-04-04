@@ -63,3 +63,56 @@ func (a *api) Run(port string) error {
 } 
 
 ```
+
+#### Shutdown Pinger
+This package provides a `ShutdownPinger`. Use this to respond to liveness probes whilst shutting down. e.g.
+
+```golang
+package main
+
+import (
+    "github.com/music-tribe/healthy"
+)
+
+shutdownPinger := healthy.NewShutdownPinger(logger, "tunnel", "tunnel service is shutting down")
+healthService, err := healthy.New(
+    serviceName,
+    version,
+    healthy.NewMongoDbCheckerWithConnectionString("database", dbConnString),
+    healthy.NewShutdownChecker("shutdown", shutdownPinger),
+)
+if err != nil {
+    return err
+}
+
+//
+package api
+
+import (
+    "github.com/labstack/echo/v4"
+    "github.com/music-tribe/healthy/handlers"
+)
+
+type api struct{
+    healthService   healthy.Service
+    shutdownpinger *healthy.ShutdownPinger
+}
+
+func NewApi(hSvc healthy.Service, shutdownpinger *healthy.ShutdownPinger) ports.API {
+    return &api{
+        healthService:  hSvc,
+        shutdownpinger: shutdownpinger,
+    }
+}
+
+func (api *api) Shutdown(ctx context.Context) error {
+	api.shutdownpinger.SetShutdown()
+	return api.router.Shutdown(ctx)
+}
+```
+
+## Development
+
+To run the test suite use command `go test -v`.
+
+> NOTE: generated mocks are added to source control so downstream packages can compile and test this. To update mocks run `make mocks`.
