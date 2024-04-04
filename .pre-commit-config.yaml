@@ -22,3 +22,7 @@ repos:
       args: [ -w ]
     - id: golangci-lint-mod
       args: [ --fix, "--out-format=junit-xml:results_junitxml_golangci.xml,colored-line-number" ]
+    - id: my-cmd-mod
+      name: check-mocks-up-to-date
+      alias: check-mocks-up-to-date
+      args: [ ./check-mocks.sh ]
