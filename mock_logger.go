@@ -33,57 +33,6 @@ func (m *MockLogger) EXPECT() *MockLoggerMockRecorder {
 	return m.recorder
 }
 
-// Debug mocks base method.
-func (m *MockLogger) Debug(component, method string, args ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Debug", varargs...)
-}
-
-// Debug indicates an expected call of Debug.
-func (mr *MockLoggerMockRecorder) Debug(component, method interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Debug", reflect.TypeOf((*MockLogger)(nil).Debug), varargs...)
-}
-
-// Error mocks base method.
-func (m *MockLogger) Error(component, method string, args ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Error", varargs...)
-}
-
-// Error indicates an expected call of Error.
-func (mr *MockLoggerMockRecorder) Error(component, method interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MockLogger)(nil).Error), varargs...)
-}
-
-// Fatal mocks base method.
-func (m *MockLogger) Fatal(component, method string, args ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Fatal", varargs...)
-}
-
-// Fatal indicates an expected call of Fatal.
-func (mr *MockLoggerMockRecorder) Fatal(component, method interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Fatal", reflect.TypeOf((*MockLogger)(nil).Fatal), varargs...)
-}
-
 // Info mocks base method.
 func (m *MockLogger) Info(component, method string, args ...interface{}) {
 	m.ctrl.T.Helper()
@@ -99,38 +48,4 @@ func (mr *MockLoggerMockRecorder) Info(component, method interface{}, args ...in
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{component, method}, args...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockLogger)(nil).Info), varargs...)
-}
-
-// Panic mocks base method.
-func (m *MockLogger) Panic(component, method string, args ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Panic", varargs...)
-}
-
-// Panic indicates an expected call of Panic.
-func (mr *MockLoggerMockRecorder) Panic(component, method interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Panic", reflect.TypeOf((*MockLogger)(nil).Panic), varargs...)
-}
-
-// Warn mocks base method.
-func (m *MockLogger) Warn(component, method string, args ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Warn", varargs...)
-}
-
-// Warn indicates an expected call of Warn.
-func (mr *MockLoggerMockRecorder) Warn(component, method interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Warn", reflect.TypeOf((*MockLogger)(nil).Warn), varargs...)
 }
