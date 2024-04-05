@@ -73,6 +73,82 @@ func TestHandler(t *testing.T) {
 		}
 	})
 
+	t.Run("When one of many services are unhealthy it should return a 503.", func(t *testing.T) {
+		wantStatusCode := 503
+
+		req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+		rec := httptest.NewRecorder()
+		ctx := e.NewContext(req, rec)
+
+		erroringPinger := &healthy.MockPinger{
+			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
+		}
+
+		hSvc, err := healthy.New(
+			"some-service",
+			"v1.1.3",
+			healthy.NewChecker("mockStoreError", erroringPinger),
+			healthy.NewChecker("mockStoreHealthy", &healthy.MockPinger{}),
+		)
+		require.NoError(t, err)
+
+		h := Handler(hSvc)
+		err = h(ctx)
+		require.NoError(t, err)
+
+		defer rec.Result().Body.Close()
+
+		gotStatusCode := rec.Result().StatusCode
+		if err != nil {
+			ce := new(errors.CloudError)
+			if errs.As(err, &ce) {
+				gotStatusCode = ce.StatusCode
+			}
+		}
+
+		if wantStatusCode != gotStatusCode {
+			t.Errorf("wanted status code to be %d but got %d\n", wantStatusCode, gotStatusCode)
+		}
+	})
+
+	t.Run("When one of many services, added in a different order, are unhealthy it should return a 503.", func(t *testing.T) {
+		wantStatusCode := 503
+
+		req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+		rec := httptest.NewRecorder()
+		ctx := e.NewContext(req, rec)
+
+		erroringPinger := &healthy.MockPinger{
+			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
+		}
+
+		hSvc, err := healthy.New(
+			"some-service",
+			"v1.1.3",
+			healthy.NewChecker("mockStoreHealthy", &healthy.MockPinger{}),
+			healthy.NewChecker("mockStoreError", erroringPinger),
+		)
+		require.NoError(t, err)
+
+		h := Handler(hSvc)
+		err = h(ctx)
+		require.NoError(t, err)
+
+		defer rec.Result().Body.Close()
+
+		gotStatusCode := rec.Result().StatusCode
+		if err != nil {
+			ce := new(errors.CloudError)
+			if errs.As(err, &ce) {
+				gotStatusCode = ce.StatusCode
+			}
+		}
+
+		if wantStatusCode != gotStatusCode {
+			t.Errorf("wanted status code to be %d but got %d\n", wantStatusCode, gotStatusCode)
+		}
+	})
+
 	t.Run("When we don't pass a pinger to our checker, it should return a 503.", func(t *testing.T) {
 		wantStatusCode := 503
 
