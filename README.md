@@ -60,7 +60,7 @@ func (a *api) Run(port string) error {
     e.GET("/healthz", handlers.Handler(api.healthService))
 
     return e.Start(":"+port)
-} 
+}
 
 ```
 
@@ -116,3 +116,13 @@ func (api *api) Shutdown(ctx context.Context) error {
 To run the test suite use command `go test -v`.
 
 > NOTE: generated mocks are added to source control so downstream packages can compile and test this. To update mocks run `make mocks`.
+
+### Pre-commit
+
+Install [pre-commit](https://pre-commit.com/) with `pre-commit install`.
+
+Ensure you have the tools required:
+* [golangci-lint](https://golangci-lint.run/)
+* [goreturns](https://github.com/sqs/goreturns)
+* [gosec](https://github.com/securego/gosec)
+* [staticcheck](https://staticcheck.dev/)

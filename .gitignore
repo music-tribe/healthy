@@ -29,3 +29,9 @@ logs.txt
 
 # snyk
 **/.dccache
+
+# gosec
+**/results_junitxml_gosec.xml
+
+# golangci
+**/results_junitxml_golangci.xml
