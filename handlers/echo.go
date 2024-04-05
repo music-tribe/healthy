@@ -11,11 +11,13 @@ import (
 func Handler(svc healthy.Service) echo.HandlerFunc {
 	opts := make([]health.Config, len(svc.Checkers()))
 
-	for i, checker := range svc.Checkers() {
+	i := 0
+	for name, checker := range svc.Checkers() {
 		opts[i] = health.Config{
-			Name:  checker.Name(),
+			Name:  name,
 			Check: getCheckFunc(checker),
 		}
+		i++
 	}
 
 	h, _ := health.New(health.WithComponent(health.Component{

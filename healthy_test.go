@@ -49,6 +49,20 @@ func TestNew(t *testing.T) {
 			wantName:    "hello",
 			wantVersion: "1.2.3",
 		},
+		{
+			name: "when the checkers have duplicated names, it should error",
+			args: args{
+				serviceName: "hello",
+				version:     "1.2.3",
+				checkers: []Checker{
+					NewChecker("hello", &MockPinger{}),
+					NewChecker("hello", &MockPinger{}),
+				},
+			},
+			wantErr:     true,
+			wantName:    "hello",
+			wantVersion: "1.2.3",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
