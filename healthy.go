@@ -1,27 +1,26 @@
 package healthy
 
-import "github.com/music-tribe/errors"
+import (
+	"fmt"
+
+	"github.com/music-tribe/errors"
+)
 
 type Service interface {
 	Name() string
-	Checkers() []Checker
+	Checkers() map[string]Checker
 	Version() string
 }
 
 type service struct {
 	serviceName string `validate:"required"`
 	version     string `validate:"required,semver"`
-	checkers    []Checker
+	checkers    map[string]Checker
 }
 
 func New(serviceName, version string, checkers ...Checker) (Service, error) {
-	c := make([]Checker, 0)
 	s := new(service)
-	s.checkers = checkers
-	if checkers == nil {
-		s.checkers = c
-	}
-
+	s.checkers = make(map[string]Checker)
 	if serviceName == "" {
 		return s, errors.NewCloudError(400, "serviceName param is empty")
 	}
@@ -33,10 +32,18 @@ func New(serviceName, version string, checkers ...Checker) (Service, error) {
 	s.serviceName = serviceName
 	s.version = version
 
+	for _, checker := range checkers {
+		_, ok := s.checkers[checker.Name()]
+		if ok {
+			return s, errors.NewCloudError(400, fmt.Sprintf("Duplicate checker name: %s", checker.Name()))
+		}
+		s.checkers[checker.Name()] = checker
+	}
+
 	return s, nil
 }
 
-func (s *service) Checkers() []Checker {
+func (s *service) Checkers() map[string]Checker {
 	return s.checkers
 }
 

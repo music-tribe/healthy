@@ -14,6 +14,7 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
     - id: go-test-repo-mod
+      args: [-race]
     - id: go-vet-mod
     - id: go-sec-mod
       args: [ -fmt=junit-xml, -nosec, -out=results_junitxml_gosec.xml, -track-suppressions ]
