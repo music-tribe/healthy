@@ -13,10 +13,8 @@ func Handler(svc healthy.Service) echo.HandlerFunc {
 
 	for i, checker := range svc.Checkers() {
 		opts[i] = health.Config{
-			Name: checker.Name(),
-			Check: func(ctx context.Context) error {
-				return checker.Check()
-			},
+			Name:  checker.Name(),
+			Check: getCheckFunc(checker),
 		}
 	}
 
@@ -26,4 +24,10 @@ func Handler(svc healthy.Service) echo.HandlerFunc {
 	}), health.WithChecks(opts...))
 
 	return echo.WrapHandler(h.Handler())
+}
+
+func getCheckFunc(c healthy.Checker) func(ctx context.Context) error {
+	return func(ctx context.Context) error {
+		return c.Check()
+	}
 }
