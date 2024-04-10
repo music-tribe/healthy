@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/music-tribe/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewChecker(t *testing.T) {
@@ -40,7 +42,7 @@ func TestNewChecker(t *testing.T) {
 			name: "when the pinger is missing, it should default to the stub pinger",
 			args: args{
 				name:   "hello",
-				pinger: &stubPinger{},
+				pinger: nil,
 			},
 			wantName:       "hello",
 			wantPingErrMsg: stubPingerErrorMessage,
@@ -76,4 +78,24 @@ func TestNewChecker(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGetPinger(t *testing.T) {
+	t.Run("We should get back the correct pinger when requested", func(t *testing.T) {
+		checker := NewChecker("hello", &ShutdownPinger{})
+		pinger := checker.Pinger()
+		require.NotNil(t, pinger)
+		shutdownPinger, ok := pinger.(*ShutdownPinger)
+		assert.True(t, ok)
+		assert.NotNil(t, shutdownPinger)
+	})
+
+	t.Run("We should get back the stub pinger when no pinger is set", func(t *testing.T) {
+		checker := NewChecker("hello", nil)
+		pinger := checker.Pinger()
+		require.NotNil(t, pinger)
+		stubPinger, ok := pinger.(*stubPinger)
+		assert.True(t, ok)
+		assert.NotNil(t, stubPinger)
+	})
 }
