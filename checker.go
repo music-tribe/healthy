@@ -5,6 +5,7 @@ const defaultName = "healthcheck"
 type Checker interface {
 	Check() error
 	Name() string
+	Pinger() Pinger
 }
 
 func NewChecker(name string, pinger Pinger) Checker {
@@ -35,4 +36,8 @@ func (c *checker) Check() error {
 
 func (c *checker) Name() string {
 	return c.name
+}
+
+func (c *checker) Pinger() Pinger {
+	return c.pinger
 }
