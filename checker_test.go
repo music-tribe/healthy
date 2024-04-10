@@ -40,7 +40,7 @@ func TestNewChecker(t *testing.T) {
 			name: "when the pinger is missing, it should default to the stub pinger",
 			args: args{
 				name:   "hello",
-				pinger: &stubPinger{},
+				pinger: nil,
 			},
 			wantName:       "hello",
 			wantPingErrMsg: stubPingerErrorMessage,
