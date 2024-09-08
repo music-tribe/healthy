@@ -1,14 +1,18 @@
 package handlers
 
 import (
+	"encoding/json"
 	errs "errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	health "github.com/hellofresh/health-go/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/music-tribe/errors"
 	"github.com/music-tribe/healthy"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -28,6 +32,15 @@ func TestHandler(t *testing.T) {
 
 		err := h(ctx)
 		require.NoError(t, err)
+
+		defer rec.Result().Body.Close()
+		body, err := io.ReadAll(rec.Result().Body)
+		require.NoError(t, err)
+
+		healthCheck := health.Check{}
+		err = json.Unmarshal(body, &healthCheck)
+		require.NoError(t, err)
+		assert.Equal(t, healthCheck.Status, health.Status("OK"))
 
 		gotStatusCode := rec.Result().StatusCode
 		if err != nil {
@@ -57,6 +70,15 @@ func TestHandler(t *testing.T) {
 		h := Handler(hSvc)
 		err = h(ctx)
 		require.NoError(t, err)
+
+		defer rec.Result().Body.Close()
+		body, err := io.ReadAll(rec.Result().Body)
+		require.NoError(t, err)
+
+		healthCheck := health.Check{}
+		err = json.Unmarshal(body, &healthCheck)
+		require.NoError(t, err)
+		assert.Equal(t, healthCheck.Status, health.Status("Unavailable"))
 
 		gotStatusCode := rec.Result().StatusCode
 		if err != nil {
@@ -93,6 +115,13 @@ func TestHandler(t *testing.T) {
 		require.NoError(t, err)
 
 		defer rec.Result().Body.Close()
+		body, err := io.ReadAll(rec.Result().Body)
+		require.NoError(t, err)
+
+		healthCheck := health.Check{}
+		err = json.Unmarshal(body, &healthCheck)
+		require.NoError(t, err)
+		assert.Equal(t, healthCheck.Status, health.Status("Unavailable"))
 
 		gotStatusCode := rec.Result().StatusCode
 		if err != nil {
@@ -129,6 +158,13 @@ func TestHandler(t *testing.T) {
 		require.NoError(t, err)
 
 		defer rec.Result().Body.Close()
+		body, err := io.ReadAll(rec.Result().Body)
+		require.NoError(t, err)
+
+		healthCheck := health.Check{}
+		err = json.Unmarshal(body, &healthCheck)
+		require.NoError(t, err)
+		assert.Equal(t, healthCheck.Status, health.Status("Unavailable"))
 
 		gotStatusCode := rec.Result().StatusCode
 		if err != nil {
