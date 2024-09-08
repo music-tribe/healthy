@@ -14,12 +14,14 @@ func Handler(svc healthy.Service) echo.HandlerFunc {
 	i := 0
 	for name, checker := range svc.Checkers() {
 		opts[i] = health.Config{
-			Name:  name,
-			Check: getCheckFunc(checker),
+			Name:    name,
+			Check:   getCheckFunc(checker),
+			Timeout: checker.Timeout,
 		}
 		i++
 	}
 
+	// FIXME(alex) check the error here
 	h, _ := health.New(health.WithComponent(health.Component{
 		Name:    svc.Name(),
 		Version: svc.Version(),
