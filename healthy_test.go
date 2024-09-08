@@ -22,7 +22,7 @@ func TestNew(t *testing.T) {
 			args: args{
 				serviceName: "",
 				version:     "1.2.3",
-				checkers:    []Checker{NewChecker("hello", &MockPinger{})},
+				checkers:    []Checker{NewChecker("hello", NewMockChecker(nil))},
 			},
 			wantErr:     true,
 			wantVersion: "",
@@ -32,7 +32,7 @@ func TestNew(t *testing.T) {
 			args: args{
 				serviceName: "hello",
 				version:     "",
-				checkers:    []Checker{NewChecker("hello", &MockPinger{})},
+				checkers:    []Checker{NewChecker("hello", NewMockChecker(nil))},
 			},
 			wantErr:     true,
 			wantVersion: "",
@@ -43,7 +43,7 @@ func TestNew(t *testing.T) {
 			args: args{
 				serviceName: "hello",
 				version:     "1.2.3",
-				checkers:    []Checker{NewChecker("hello", &MockPinger{})},
+				checkers:    []Checker{NewChecker("hello", NewMockChecker(nil))},
 			},
 			wantErr:     false,
 			wantName:    "hello",
@@ -55,8 +55,8 @@ func TestNew(t *testing.T) {
 				serviceName: "hello",
 				version:     "1.2.3",
 				checkers: []Checker{
-					NewChecker("hello", &MockPinger{}),
-					NewChecker("hello", &MockPinger{}),
+					NewChecker("hello", NewMockChecker(nil)),
+					NewChecker("hello", NewMockChecker(nil)),
 				},
 			},
 			wantErr:     true,

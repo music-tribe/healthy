@@ -1,12 +1,13 @@
 package healthy
 
 import (
+	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 )
 
-func TestShutdownPinger_Ping(t *testing.T) {
+func TestShutdownChecker_Check(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	logger := NewMockLogger(ctrl)
 	type fields struct {
@@ -34,15 +35,15 @@ func TestShutdownPinger_Ping(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			component := "test ShutdownPinger"
+			component := "test ShutdownChecker"
 			shutdownLog := "test service shutting down"
-			p := NewShutdownPinger(logger, component, shutdownLog)
+			p, c := NewShutdownChecker(tt.name, logger, component, shutdownLog)
 			if tt.fields.isShuttingDown {
 				logger.EXPECT().Info(component, "SetShutdown", shutdownLog)
 				p.SetShutdown()
 			}
-			if err := p.Ping(); (err != nil) != tt.wantErr {
-				t.Errorf("ShutdownPinger.Ping() error = %v, wantErr %v", err, tt.wantErr)
+			if err := c.CheckFunc(context.Background()); (err != nil) != tt.wantErr {
+				t.Errorf("ShutdownChecker.CheckFunc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

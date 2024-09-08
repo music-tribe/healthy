@@ -1,43 +1,25 @@
 package healthy
 
+import (
+	"github.com/hellofresh/health-go/v5"
+)
+
 const defaultName = "healthcheck"
 
-type Checker interface {
-	Check() error
-	Name() string
-	Pinger() Pinger
+type Checker struct {
+	Name      string
+	CheckFunc health.CheckFunc
 }
 
-func NewChecker(name string, pinger Pinger) Checker {
+func NewChecker(name string, checkFunc health.CheckFunc) Checker {
 	if name == "" {
 		name = defaultName
 	}
-	if pinger == nil {
-		pinger = new(stubPinger)
+	if checkFunc == nil {
+		checkFunc = stubChecker()
 	}
-	return &checker{
-		name:   name,
-		pinger: pinger,
+	return Checker{
+		Name:      name,
+		CheckFunc: checkFunc,
 	}
-}
-
-func NewMongoDbCheckerWithConnectionString(name, dbConnString string) Checker {
-	return NewChecker(name, &MongoDbPinger{connString: dbConnString})
-}
-
-type checker struct {
-	name   string
-	pinger Pinger
-}
-
-func (c *checker) Check() error {
-	return c.pinger.Ping()
-}
-
-func (c *checker) Name() string {
-	return c.name
-}
-
-func (c *checker) Pinger() Pinger {
-	return c.pinger
 }

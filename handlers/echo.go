@@ -29,7 +29,5 @@ func Handler(svc healthy.Service) echo.HandlerFunc {
 }
 
 func getCheckFunc(c healthy.Checker) func(ctx context.Context) error {
-	return func(ctx context.Context) error {
-		return c.Check()
-	}
+	return c.CheckFunc
 }
