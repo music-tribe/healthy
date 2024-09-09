@@ -4,9 +4,11 @@ import (
 	"context"
 	errs "errors"
 	"testing"
+	"time"
 
 	"github.com/hellofresh/health-go/v5"
 	"github.com/music-tribe/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewChecker(t *testing.T) {
@@ -78,4 +80,17 @@ func TestNewChecker(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestNewCheckWithTimeout(t *testing.T) {
+	t.Parallel()
+	t.Run("When NewChecker is called we should default Timeout to 2 seconds", func(t *testing.T) {
+		c := NewChecker("hello", NewMockChecker(nil))
+		assert.Equal(t, 2*time.Second, c.Timeout)
+	})
+
+	t.Run("When NewCheckerWithTimeout is called we should set Timeout to timeout passed in", func(t *testing.T) {
+		c := NewCheckerWithTimeout("hello", NewMockChecker(nil), 5*time.Second)
+		assert.Equal(t, 5*time.Second, c.Timeout)
+	})
 }
