@@ -33,11 +33,11 @@ func New(serviceName, version string, checkers ...Checker) (Service, error) {
 	s.version = version
 
 	for _, checker := range checkers {
-		_, ok := s.checkers[checker.Name()]
+		_, ok := s.checkers[checker.Name]
 		if ok {
-			return s, errors.NewCloudError(400, fmt.Sprintf("Duplicate checker name: %s", checker.Name()))
+			return s, errors.NewCloudError(400, fmt.Sprintf("Duplicate checker name: %s", checker.Name))
 		}
-		s.checkers[checker.Name()] = checker
+		s.checkers[checker.Name] = checker
 	}
 
 	return s, nil

@@ -23,7 +23,7 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		hSvc, _ := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", &healthy.MockPinger{}))
+		hSvc, _ := healthy.New("some-service", "1.1.3", healthy.NewChecker("mockStore", healthy.NewMockChecker(nil)))
 		h := Handler(hSvc)
 
 		err := h(ctx)
@@ -49,11 +49,9 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		erroringPinger := &healthy.MockPinger{
-			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
-		}
+		erroringChecker := healthy.NewMockChecker(errors.NewCloudError(404, "")) // no matter what code we pass, it will return a 503 on error
 
-		hSvc, err := healthy.New("some-service", "v1.1.3", healthy.NewChecker("mockStore", erroringPinger))
+		hSvc, err := healthy.New("some-service", "v1.1.3", healthy.NewChecker("mockStore", erroringChecker))
 		require.NoError(t, err)
 
 		h := Handler(hSvc)
@@ -80,15 +78,13 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		erroringPinger := &healthy.MockPinger{
-			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
-		}
+		erroringChecker := healthy.NewMockChecker(errors.NewCloudError(404, "")) // no matter what code we pass, it will return a 503 on error
 
 		hSvc, err := healthy.New(
 			"some-service",
 			"v1.1.3",
-			healthy.NewChecker("mockStoreError", erroringPinger),
-			healthy.NewChecker("mockStoreHealthy", &healthy.MockPinger{}),
+			healthy.NewChecker("mockStoreError", erroringChecker),
+			healthy.NewChecker("mockStoreHealthy", healthy.NewMockChecker(nil)),
 		)
 		require.NoError(t, err)
 
@@ -118,15 +114,13 @@ func TestHandler(t *testing.T) {
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		erroringPinger := &healthy.MockPinger{
-			Err: errors.NewCloudError(404, ""), // no matter what code we pass, it will return a 503 on error
-		}
+		erroringChecker := healthy.NewMockChecker(errors.NewCloudError(404, "")) // no matter what code we pass, it will return a 503 on error
 
 		hSvc, err := healthy.New(
 			"some-service",
 			"v1.1.3",
-			healthy.NewChecker("mockStoreHealthy", &healthy.MockPinger{}),
-			healthy.NewChecker("mockStoreError", erroringPinger),
+			healthy.NewChecker("mockStoreHealthy", healthy.NewMockChecker(nil)),
+			healthy.NewChecker("mockStoreError", erroringChecker),
 		)
 		require.NoError(t, err)
 
@@ -149,7 +143,7 @@ func TestHandler(t *testing.T) {
 		}
 	})
 
-	t.Run("When we don't pass a pinger to our checker, it should return a 503.", func(t *testing.T) {
+	t.Run("When we don't pass a checkFunc to our checker, it should return a 503.", func(t *testing.T) {
 		wantStatusCode := 503
 
 		req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
