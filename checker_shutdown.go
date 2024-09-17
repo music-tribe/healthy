@@ -18,7 +18,7 @@ type ShutdownChecker struct {
 
 func (c *ShutdownChecker) SetShutdown() {
 	c.isShuttingDown.Set(true)
-	c.logger.Info(c.component, "SetShutdown", c.shutdownLog)
+	c.logger.Info(c.shutdownLog)
 }
 
 func (c *ShutdownChecker) Get() *atomic_bool.AtomicBool {
