@@ -39,7 +39,7 @@ func TestShutdownChecker_Check(t *testing.T) {
 			shutdownLog := "test service shutting down"
 			p, c := NewShutdownChecker(tt.name, logger, component, shutdownLog)
 			if tt.fields.isShuttingDown {
-				logger.EXPECT().Info(component, "SetShutdown", shutdownLog)
+				logger.EXPECT().Info(shutdownLog)
 				p.SetShutdown()
 			}
 			if err := c.CheckFunc(context.Background()); (err != nil) != tt.wantErr {

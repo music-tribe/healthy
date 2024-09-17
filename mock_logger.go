@@ -34,9 +34,9 @@ func (m *MockLogger) EXPECT() *MockLoggerMockRecorder {
 }
 
 // Info mocks base method.
-func (m *MockLogger) Info(component, method string, args ...interface{}) {
+func (m *MockLogger) Info(args ...interface{}) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{component, method}
+	varargs := []interface{}{}
 	for _, a := range args {
 		varargs = append(varargs, a)
 	}
@@ -44,8 +44,7 @@ func (m *MockLogger) Info(component, method string, args ...interface{}) {
 }
 
 // Info indicates an expected call of Info.
-func (mr *MockLoggerMockRecorder) Info(component, method interface{}, args ...interface{}) *gomock.Call {
+func (mr *MockLoggerMockRecorder) Info(args ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{component, method}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockLogger)(nil).Info), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockLogger)(nil).Info), args...)
 }
