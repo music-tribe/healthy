@@ -19,8 +19,6 @@ repos:
     - id: go-sec-mod
       args: [ -fmt=junit-xml, -nosec, -out=results_junitxml_gosec.xml, -track-suppressions ]
     - id: go-staticcheck-mod
-    - id: go-returns
-      args: [ -w ]
     - id: golangci-lint-mod
       args: [ --fix, "--out-format=junit-xml:results_junitxml_golangci.xml,colored-line-number" ]
     - id: my-cmd-mod
