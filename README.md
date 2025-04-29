@@ -78,7 +78,7 @@ isShuttingDownChecker, shutdownChecker := healthy.NewShutdownChecker("tunnelShut
 healthService, err := healthy.New(
     serviceName,
     version,
-    healthy.NewMongoDbCheckerWithConnectionString("database", dbConnString),
+    dbPingChecker(db),
     shutdownChecker,
 )
 if err != nil {
